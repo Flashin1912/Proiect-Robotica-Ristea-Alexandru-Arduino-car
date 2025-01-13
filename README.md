@@ -4,8 +4,8 @@
 [2. Overview](#overview)\
 [3. Hardware Design](#hardware-design)\
 [4. Software Design](#software-design)\
-[5. Final Results](#introduction)\
-[6. Introduction](#final-results)\
+[5. Final Results](#final-results)\
+[6. Journal](#journal)\
 [7. Conclusion](#conclusion)\
 [8. Source Code](#source-code)\
 [9. Resources](#resources)
@@ -40,7 +40,9 @@ The board contains Wi-Fi, Bluetooth and a dual-core processor.
 
 10.  **Resistors** ---- Used for the transfer between the different power voltages of the Arduino and the ESP32
 
-11.  *(Optional)* **Joystick** ---- A precaution in case the batteries of the car run out
+11.  **Smartphone** ---- In this case an Android phone that is used to control the car
+
+12.  *(Optional)* **Joystick** ---- A precaution in case the batteries of the car run out
 
 ## Hardware Design
 | Component                           | Quantity | Description                                                                                 | Datasheet/Link                                                                 |
@@ -55,11 +57,48 @@ The board contains Wi-Fi, Bluetooth and a dual-core processor.
 | External Battery                    | 1        | Provides power to the ESP32 module.                                                       | N/A                                                                            |
 | Wires                               | Multiple | Connect components in the circuit.                                                        | N/A                                                                            |
 | Resistors                           | Multiple | Used for power transfer between Arduino and ESP32.                                         | N/A
+                                                              
+Joystick (Optional):[Datasheet](https://components101.com/sites/default/files/component_datasheet/Joystick%20Module.pdf) 
 
-| Joystick (Optional)                 | 1        | Backup control method in case the car's batteries run out.                                 | [Datasheet](https://components101.com/sites/default/files/component_datasheet/Joystick%20Module.pdf) |
+### Circuit Schematic
+
+
+### Circuit Photos
+![Poze_circuit1](https://github.com/user-attachments/assets/a921975f-0c9d-4b9c-a90b-a9d77d27bcd3)
+
+![poza_circuit3](https://github.com/user-attachments/assets/36930972-e319-4a4e-9b71-135602be3f65)
+
+### Usage of the Shield:
+| Component         | Pin Name      | Connection          |
+|-------------------|---------------|---------------------|
+|  L293D Shield     |       +       |      9V Battery     |
+|                   |       -       |        GND          |
+|                   |      PWR      |     Back to PWR     |
+|                   |       M3      |Motors 1 and 3(- & +)|
+|                   |       M4      |Motors 2 and 4(- & +)|
+|                   |      GND5     |    GND in ESP32     |
+|                   |      A4       |    D19 in ESP32     |
+|                   |      A5       |    D21 in ESP32     |
+
+The Shield completely covers the Arduino and uses all it'pins, giving power to the Arduino as well.
+
+### Voltage Shifting
+When connecting Arduino to the ESP32 there is a small problem: voltages are not compatible. Respectively, Arduino operates at 5V and ESP32 at 3.3V. We could leave it like this and connect them anyway, and while they still work, we risk damaging the circuits.
+The solution is using a logic level shifter to change the voltage and safely connect them. Or, if you forget to buy one(like me) you can make a logic level shifter at home. Like this:
+![Schema_Comunicare_Arduino-Esp](https://github.com/user-attachments/assets/657700c0-e1d5-405c-b9c5-7abb14ae5b4c)
+And after working through other technical difficulties, like not have the proper resistors and combining the ones you have, you get this result:
+![Poza_circuit_rezistente](https://github.com/user-attachments/assets/e9b52a80-7fdc-46b6-b822-1f22520ad82b)
 
 
 ## Software Design
+The software design is centered around efficient, reliable communication between the robot's hardware components and the user. The project is developed using PlatformIO on Visual Studio Code, and later Arduino IDE.
+On the Smartphone we have downloaded an application called "Serial Bluetooth Terminal" from the Play Store and used it to connect via Bluetooth to the ESP32.
+The coding software was made in C++.
+
+### Libraries used:
+1.   SoftwareSerial.h ---- used for communication between Arduino and ESP32
+2.   AFMotor.h ---- library that helps make the motors work with the specific drivers that they need
+3.   BluetoothSerial.h ---- used for communication between ESP32 and our smartphone
 
 ## Final Results
 
