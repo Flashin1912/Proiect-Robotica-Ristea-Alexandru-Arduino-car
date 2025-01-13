@@ -68,6 +68,9 @@ Joystick (Optional):[Datasheet](https://components101.com/sites/default/files/co
 
 ![poza_circuit3](https://github.com/user-attachments/assets/36930972-e319-4a4e-9b71-135602be3f65)
 
+![WhatsApp Image 2025-01-14 at 01 48 56_213627d3](https://github.com/user-attachments/assets/85b7a5d5-ac6f-4fb5-adc0-a8089e369811)
+
+
 ### Usage of the Shield:
 | Component         | Pin Name      | Connection          |
 |-------------------|---------------|---------------------|
@@ -98,7 +101,7 @@ The coding software was made in C++.
 ### Libraries used:
 1.   SoftwareSerial.h ---- used for communication between Arduino and ESP32
 2.   AFMotor.h ---- library that helps make the motors work with the specific drivers that they need
-3.   BluetoothSerial.h ---- used for communication between ESP32 and our smartphone
+3.   BluetoothSerial.h ---- used for communication between ESP32 and the smartphone
 
 ## Final Results
 
