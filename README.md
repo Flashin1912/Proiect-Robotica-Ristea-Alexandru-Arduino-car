@@ -209,46 +209,79 @@ Code for the Arduino Uno:
 #include <SoftwareSerial.h>
 #include "AFMotor.h"
 #include <Arduino.h>
-#define x A0
-#define y A1
-#define Speed 180
 
-#define rxPin A4
-#define txPin A5
+#define Speed 180
+#define rxPin A2   // RX, TX pins for SoftwareSerial
+#define txPin A3
+
+#define yellow_left A1
+#define yellow_right A0
+#define white A4
+#define red A5
 
 AF_DCMotor motor1(3);
 AF_DCMotor motor2(4);
 
-SoftwareSerial mySerial(rxPin, txPin); // RX, TX pins
+SoftwareSerial mySerial(rxPin, txPin); 
 
 void setup() {
-  Serial.begin(9600); // Serial port for sending data through USB
-  mySerial.begin(9600); // Serial port for sending data trough  Bluetooth
+  Serial.begin(9600);
+  mySerial.begin(9600); 
   motor1.setSpeed(Speed);
   motor2.setSpeed(Speed);
+  pinMode(yellow_left, OUTPUT);
+  pinMode(yellow_right, OUTPUT);
+  pinMode(white, OUTPUT);
+  pinMode(red, OUTPUT);
+  digitalWrite(white, HIGH );
 }
 
 void loop() {
   if (mySerial.available()) {
-    String data = mySerial.readString();
-    Serial.println(data);
-    if (data == 'STANGA')  {
+    char data = mySerial.read();
+    Serial.write(data);
+    if (data == '3')  {                // LEFT = 3
       motor1.run(BACKWARD);
       motor2.run(BACKWARD);
-    } else if (data == 'DREAPTA') {
+      digitalWrite(red, LOW);
+      digitalWrite(yellow_left, HIGH);
+      digitalWrite(yellow_right, LOW);
+      digitalWrite(white, HIGH );
+    } else if (data == '4') {           // RIGHT = 4
       motor1.run(FORWARD);
       motor2.run(FORWARD);
-    } else if (data == 'SPATE') {
+      digitalWrite(red, LOW);
+      digitalWrite(yellow_left, LOW);
+      digitalWrite(yellow_right, HIGH);
+      digitalWrite(white, HIGH );
+    } else if (data == '1') {           // FORWARD = 1
       motor1.run(FORWARD);
       motor2.run(BACKWARD);
-    } else if (data == 'INAINTE') {
+      digitalWrite(red, LOW);
+      digitalWrite(yellow_left, LOW);
+      digitalWrite(yellow_right, LOW);
+      digitalWrite(white, HIGH );
+    } else if (data == '2') {         // BACKWARD = 2
       motor1.run(BACKWARD);
       motor2.run(FORWARD);
-    } else if (data == 'STOP') {
+      digitalWrite(red, HIGH);
+      digitalWrite(yellow_left, LOW);
+      digitalWrite(yellow_right, LOW);
+      digitalWrite(white, HIGH );
+    } else if (data == '0') {          // STOP = 0
       motor1.run(RELEASE);
       motor2.run(RELEASE);
+      digitalWrite(red, LOW);
+      digitalWrite(yellow_left, LOW);
+      digitalWrite(yellow_right, LOW);
+      digitalWrite(white, HIGH );
+    }  else if (data == '5') {          // LIGHTS OFF = 5
+      digitalWrite(red, LOW);
+      digitalWrite(yellow_left, LOW);
+      digitalWrite(yellow_right, LOW);
+      digitalWrite(white, LOW );
     }
-    mySerial.println(data);
+    mySerial.write(data);
   }
 }
 ```
@@ -273,9 +306,9 @@ void setup() {
 
 void loop() {
   if (serialBT.available()) {
-    String data = serialBT.readString();
-    Serial.println(data);
-    mySerial.println(data);
+    char data = serialBT.read();
+    Serial.write(data);
+    mySerial.write(data);
   }
 }
 ```
