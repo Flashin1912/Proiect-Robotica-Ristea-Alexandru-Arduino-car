@@ -1,4 +1,5 @@
 # Remote Control Car
+
 ## Table of Contents
 [1. Introduction](#introduction)\
 [2. Overview](#overview)\
@@ -23,7 +24,7 @@ This compact vehicle is designed to be operated via a mobile app, offering a sea
    
 2.  **Shield driver motor stepper L293D** ---- Using an L293D motor driver IC with an Arduino is an excellent way to achieve precise DC motor control. The module allows the control of DC motors both forward and backward. It enables the Arduino to manage the high current and voltage requirements of the motors safely.The shield module supports 4 DC motors, 2 steppers or 2 servomotors.
 
-3.  **4 TT Motors** ---- They are basically DC motors that run by injecting them to a DC source like a battery or a DC coupler. They are controlled by the Arduino through the motor stepper.
+3.  **4 TT Motors** ---- This is essentially a regular motor combined with a series of gears, all encased within a plastic shell. As the motor spins, the gears translate this spin to the wheels of our rover. The use of gears provides a crucial benefit - it increases torque, enabling the motor to move larger, heavier loads.
 
 4.  **4 Mecanum Wheels** ---- A Mecanum wheel is an omnidirectional wheel design for a land-based vehicle to move in any direction. It consists of a series of rubberized external rollers set at a 45° angle to the wheel. Each wheel is independently-driven, and the direction of travel is dependent on the interaction between the directions each wheel is driven in relative to the others.
 
@@ -40,28 +41,31 @@ The board contains Wi-Fi, Bluetooth and a dual-core processor.
 
 10.  **Resistors** ---- Used for the transfer between the different power voltages of the Arduino and the ESP32
 
-11.  **Smartphone** ---- In this case an Android phone that is used to control the car
+11.  **LEDs** ---- Used to show the different states and movements of the vehicle
 
-12.  *(Optional)* **Joystick** ---- A precaution in case the batteries of the car run out
+12.  **Smartphone** ---- In this case an Android phone that is used to control the car
+
+13.  *(Optional)* **Joystick** ---- A precaution in case the batteries of the car run out
 
 ## Hardware Design
 | Component                           | Quantity | Description                                                                                 | Datasheet/Link                                                                 |
 |-------------------------------------|----------|---------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
 | Arduino Uno                         | 1        | Microcontroller based on ATmega328P. Coordinates inputs and outputs.                       | [Datasheet](https://docs.arduino.cc/resources/datasheets/A000066-datasheet.pdf) |
 | Shield Driver Motor Stepper L293D   | 1        | Controls DC motors forward and backward. Supports DC motors, steppers, or servos.          | [Datasheet](https://www.ti.com/lit/ds/symlink/l293.pdf)                          |
-| TT Motors                           | 4        | DC motors controlled by the Arduino via the motor driver.                                  | [Datasheet](https://www.verical.com/datasheet/adafruit-brushless-dc-motors-3777-5912007.pdf)         |
+| TT Motors                           | 4        | DC motors controlled by the Arduino via the motor driver.                                  | [Datasheet](https://www.verical.com/datasheet/adafruit-brushless-dc-motors-3777-5912007.pdf) |
 | Mecanum Wheels                      | 4        | Omnidirectional wheels with external rollers set at 45° for multidirectional movement.      | [Info](https://en.wikipedia.org/wiki/Mecanum_wheel)                              |
 | Breadboard                          | 1        | Construction base for building semi-permanent electronic circuit prototypes.               | [Info](https://en.wikipedia.org/wiki/Breadboard)                                 |
 | ESP32 DEVKITV1                      | 1        | Dual-core processor with Wi-Fi, Bluetooth, and power management.                          | [Datasheet](https://www.espressif.com/sites/default/files/documentation/esp32_datasheet_en.pdf) |
 | 9V Battery                          | 1        | Supplies power to the L293D motor driver and Arduino.                                      | N/A                                                                            |
 | External Battery                    | 1        | Provides power to the ESP32 module.                                                       | N/A                                                                            |
+| LEDs                                | 6        | Used to show the states back to the user.                                                 | N/A                                                                            |
 | Wires                               | Multiple | Connect components in the circuit.                                                        | N/A                                                                            |
-| Resistors                           | Multiple | Used for power transfer between Arduino and ESP32.                                         | N/A
-                                                              
-Joystick (Optional):[Datasheet](https://components101.com/sites/default/files/component_datasheet/Joystick%20Module.pdf) 
+| Resistors                           | Multiple | Used for power transfer between Arduino and ESP32.                                         | N/A                                                                            |
+| Joystick (Optional)                 | 1        | Provides directional input as a backup control method.                                     | [Datasheet](https://naylampmechatronics.com/img/cms/Datasheets/000036%20-%20datasheet%20KY-023-Joy-IT.pdf) |
+
 
 ### Circuit Schematic
-
+*WIP*
 
 ### Circuit Photos
 ![Poze_circuit1](https://github.com/user-attachments/assets/a921975f-0c9d-4b9c-a90b-a9d77d27bcd3)
@@ -76,20 +80,27 @@ Joystick (Optional):[Datasheet](https://components101.com/sites/default/files/co
 |-------------------|---------------|---------------------|
 |  L293D Shield     |       +       |      9V Battery     |
 |                   |       -       |        GND          |
-|                   |      PWR      |     Back to PWR     |
-|                   |       M3      |Motors 1 and 3(- & +)|
-|                   |       M4      |Motors 2 and 4(- & +)|
+|                   |      PWR      |        PWR          |
+|                   |      M3       |Motors 1 and 3(- & +)|
+|                   |      M4       |Motors 2 and 4(- & +)|
 |                   |      GND5     |    GND in ESP32     |
-|                   |      A4       |    D19 in ESP32     |
-|                   |      A5       |    D21 in ESP32     |
+|                   |      A2       |    D19 in ESP32     |
+|                   |      A3       |    D21 in ESP32     |
+|                   |      A0       | right yellow light  |
+|                   |      A1       | left yellow light   |
+|                   |      A4       |    white lights     |
+|                   |      A5       |     red lights      |
 
-The Shield completely covers the Arduino and uses all it'pins, giving power to the Arduino as well.
+The Shield completely covers the Arduino and uses all it's pins, giving power to the Arduino as well through the PWR pin.
 
 ### Voltage Shifting
-When connecting Arduino to the ESP32 there is a small problem: voltages are not compatible. Respectively, Arduino operates at 5V and ESP32 at 3.3V. We could leave it like this and connect them anyway, and while they still work, we risk damaging the circuits.
-The solution is using a logic level shifter to change the voltage and safely connect them. Or, if you forget to buy one(like me) you can make a logic level shifter at home. Like this:
+When connecting Arduino to the ESP32 there is a small problem: voltages are not compatible. Respectively, Arduino operates at 5V and ESP32 at 3.3V. I could leave it like this and connect them anyway, and while they still work, it is risking damaging the circuits.
+The solution is using a logic level shifter to change the voltage and safely connect them. Or, if you forget to buy one (like me) you can make a logic level shifter at home. Like this:
+
 ![Schema_Comunicare_Arduino-Esp](https://github.com/user-attachments/assets/657700c0-e1d5-405c-b9c5-7abb14ae5b4c)
-And after working through other technical difficulties, like not have the proper resistors and combining the ones you have, you get this result:
+
+And after working through other technical difficulties, like not have the proper resistors and combining the ones I had, I got this result:
+
 ![Poza_circuit_rezistente](https://github.com/user-attachments/assets/e9b52a80-7fdc-46b6-b822-1f22520ad82b)
 
 
@@ -103,16 +114,99 @@ The coding software was made in C++.
 2.   AFMotor.h ---- library that helps make the motors work with the specific drivers that they need
 3.   BluetoothSerial.h ---- used for communication between ESP32 and the smartphone
 
-## Final Results
+### Justification of Laboratory Functionalities
+The implementation leverages laboratory components such as:
 
-## Introduction
+- **DC Motors with H-Bridge Driver**:
+   - Provide forward/reverse control for robot movement, validated using oscilloscopes for signal integrity.
+- **6 LEDs controlled through button presses**:
+   - Used as headlight, signal lights and reverse lights to simulate a more realistic car.
+- **Master-Slave communication**:
+   - Used to communicate the information given to the ESP32(slave) from the smartphone towards the Arduino(master) for commands.
+
+### Project Functionality:  
+- **Input**:   
+   - Smartphone through the app (button presses)
+- **Processing**:
+   - ESP32 takes the inputs from the smartphone without processing and feeds it to the Arduino
+   - Arduino Uno acts as the control unit, processing the inputs from the ESP32 and coordinating outputs.  
+- **Output Components**:  
+   - DC Motors (Movement)  
+   - LED Lights (State)
+ 
+## Video Demo and Validation
+I will put several pictures and videos that show the functionality of the car that will show:  
+1. **Controlling**: Navigation using the smartphone.  
+2. **Lightning**: Functionality of the headlights and brake lights.   
+
+The video validates that all functionalities operate according to project specifications.
+
+!!!VIDEO HERE!!!
+
+## Optimization Details
+### Areas of Optimization:
+1. **Memory Usage**:  
+   - Unused libraries and global variables were removed to free up SRAM.  
+2. **Power Efficiency**:  
+   - Optimized motor control to increase the power needed to move the car.  
+3. **Debounce Logic**:  
+   - Refined code to ensure button presses are detected and processed as fast as possible(with Bluetooth).
+4. **Better batteries**:
+   - Switched the original idea of using normal 1.5V batteries for more power.
+5. **Balancing the weights on the car**:
+   - Moved the components around and getting smaller components (yes that battery on top is the small one) for better balancing of the car.
+  
+  
+### Outcome of Optimizations:
+- Better response time from input to output.
+- More power sent to the motors for better speed.
+- Almost perfect balancing meaning all wheels move the same amount of distance, meaning the car works as intended
+  
+## Final Results
+The project successfully achieves its objective:
+- Seamless manual control via a smartphone application, providing precise and intuitive navigation.
+- Functional lighting system, including headlights, brake lights, and signal lights, enhancing realism and user feedback.
+- Reliable Bluetooth connectivity, ensuring smooth communication between the smartphone and the car.
+- Fully calibrated and optimized system with efficient power consumption and robust performance.
 
 ## Conclusion
+The project demonstrates a well-rounded implementation of embedded systems, showcasing innovation in design and effective use of hardware components.
 
-## Source Code
+- All features, including motor control, lighting, and Bluetooth communication, function as intended, validated through multiple test scenarios.
+- The project is user-friendly, cost-effective, and serves as a practical example of integrating robotics and smartphone-based control systems.
 
+# Journal:
+There is a lot of room for improvement, of course, and the whole project should NOT be taken too seriously! It was fun to make, both the Hardware part and the coding, and it might have practical uses in the future.
+A  good example of this is just the way that I started this project; just looking back at the initial plan and the way it turned out is just amazing. I can proudly say I completed all the goals I had in the begining and a lot more!
+
+## This is the way I started the project:
+
+This is a render of the idea I had for the project made in Blender.
+The sizes of the components are not to scale, I made it just so we can have a rough idea of how it will look:
+
+![Screenshot_20241209-010212_Word](https://github.com/user-attachments/assets/4ccc0243-d8dc-4d2d-a10a-a843d4fcf1e4)
+
+Nothing complicated so far: a car that can drive forwards and backwards(and hopefully stir left and right), with headlight acting as such. Maybe more options added later
+
+**Components:**
+
+●Arduino Board
+
+●Wheels
+
+●Power Supply(4 AA Batteries)
+
+●LEDs
+
+●Wires
+
+# Very Important Note:
+The battery on top is just a temporary solution! Getting a smaller battery or finding another way of providing power to the esp32 is a way better solution, but this is the one that I had available at the time. I am not proud of it, but it works!
+
+## Source-code
 Code for the Arduino Uno:
-```#include <SoftwareSerial.h>
+```
+#include <SoftwareSerial.h>
 #include "AFMotor.h"
 #include <Arduino.h>
 #define x A0
@@ -186,39 +280,11 @@ void loop() {
 }
 ```
 
-
 ## Resources
+I used a lot of sites for videos and ideas, solving problems and finding components! These are a few that I kept regarding their impact on the project:
 
+https://randomnerdtutorials.com/esp32-uart-communication-serial-arduino/
 
+https://www.programmingboss.com/2021/04/esp32-arduino-serial-communication-with-code.html#gsc.tab=0
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Journal
-
-This is a render of the idea I had for the project made in Blender.
-The sizes of the components are not to scale, I made it just so we can have a rough idea of how it will look:
-![Screenshot_20241209-010212_Word](https://github.com/user-attachments/assets/4ccc0243-d8dc-4d2d-a10a-a843d4fcf1e4)
-Nothing complicated so far: a car that can drive forwards and backwards(and hopefully stir left and right), with headlight acting as such. Maybe more options added later
-
-## Components
-●Arduino Board
-●Wheels
-●Power Supply(4 AA Batteries)
-●LEDs
-●Wires
-
-
-
+https://olddocs.zerynth.com/r2.6.2/official/board.zerynth.doit_esp32/docs/index.html
