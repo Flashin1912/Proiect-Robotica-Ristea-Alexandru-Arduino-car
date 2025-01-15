@@ -64,9 +64,6 @@ The board contains Wi-Fi, Bluetooth and a dual-core processor.
 | Joystick (Optional)                 | 1        | Provides directional input as a backup control method.                                     | [Datasheet](https://naylampmechatronics.com/img/cms/Datasheets/000036%20-%20datasheet%20KY-023-Joy-IT.pdf) |
 
 
-### Circuit Schematic
-*WIP*
-
 ### Circuit Photos
 ![Poze_circuit1](https://github.com/user-attachments/assets/a921975f-0c9d-4b9c-a90b-a9d77d27bcd3)
 
@@ -199,6 +196,9 @@ Nothing complicated so far: a car that can drive forwards and backwards(and hope
 ●LEDs
 
 ●Wires
+
+### Update Journal
+I short-circuited the ESP32 while switching the 9V battery for a new one. I connected the new battery to the Arduino to test it, it worked, and then I started placing the ESP. If you look at the model, I placed the ESP over the battery (using non-conductive duct tape). Also I did take out the + cable from the battery to the Arduino, but left in the - one for easier assembling. So you can imagine, i accidentally touched the + cable on something on the ESP and now it turned into a little heater... I plan on finding another one quickly or, worst case, reassembly the joystick, even if it breaks the whole purpose of the project!
 
 # Very Important Note:
 The battery on top is just a temporary solution! Getting a smaller battery or finding another way of providing power to the esp32 is a way better solution, but this is the one that I had available at the time. I am not proud of it, but it works!
