@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <AFMotor.h>
-#define x A0
-#define y A1
+#define x A2
+#define y A3
 #define Speed 180
 
 AF_DCMotor motor1(3);
